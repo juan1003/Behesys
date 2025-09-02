@@ -1,0 +1,141 @@
+/* Paint sidebar link icons teal */
+.nav-item .bi {
+    filter: invert(34%) sepia(99%) saturate(747%) hue-rotate(140deg) brightness(90%) contrast(90%);
+}
+/* Hide hamburger menu on desktop, show on mobile */
+@media (min-width: 641px) {
+    .navbar-toggler {
+        display: none !important;
+    }
+    .nav-scrollable {
+        display: block !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .navbar-toggler {
+        display: block !important;
+    }
+    .nav-scrollable {
+        display: none !important;
+    }
+    .navbar-toggler:checked ~ .nav-scrollable {
+        display: block !important;
+    }
+}
+
+/* Sidebar links charcoal gray */
+.nav-item ::deep a {
+    color: #333333 !important;
+    border-radius: 4px;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    line-height: 3rem;
+}
+
+.nav-item ::deep a.active {
+    background-color: rgba(0,128,128,0.08);
+    color: #008080 !important;
+}
+
+.nav-item ::deep a:hover {
+    background-color: rgba(0,128,128,0.12);
+    color: #008080 !important;
+}
+.navbar-toggler {
+    appearance: none;
+    cursor: pointer;
+    width: 3.5rem;
+    height: 2.5rem;
+    color: white;
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") no-repeat center/1.75rem rgba(255, 255, 255, 0.1);
+}
+
+.navbar-toggler:checked {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.top-row {
+    height: 3.5rem;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.navbar-brand {
+    font-size: 1.7rem;
+}
+
+.bi {
+    display: inline-block;
+    position: relative;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.75rem;
+    top: -1px;
+    background-size: cover;
+}
+
+
+
+.nav-item {
+    font-size: 0.9rem;
+    padding-bottom: 0.5rem;
+}
+
+    .nav-item:first-of-type {
+        padding-top: 1rem;
+    }
+
+    .nav-item:last-of-type {
+        padding-bottom: 1rem;
+    }
+
+
+.nav-item ::deep a {
+    color: #333333 !important;
+    border-radius: 4px;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    line-height: 3rem;
+}
+
+.nav-item ::deep a.active {
+    background-color: rgba(0,128,128,0.08);
+    color: #008080 !important;
+}
+
+.nav-item ::deep a:hover {
+    background-color: rgba(0,128,128,0.12);
+    color: #008080 !important;
+}
+
+
+.nav-menu {
+    background-color: #f5f6fa;
+    border-right: 1px solid #e0e0e0;
+}
+
+.nav-menu-background {
+    background-color: #e0e3e8; /* Light, darker gray than main background */
+}
+
+.sidebar {
+    color: #333333 !important; /* Charcoal gray for sidebar text */
+}
+
+.navbar {
+    background-color: #008080 !important;
+    color: #fff;
+}
+
+.navbar-brand, .navbar-nav .nav-link, .top-row .navbar-brand {
+    color: #fff !important;
+    font-weight: bold;
+    font-size: 1.7rem;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}

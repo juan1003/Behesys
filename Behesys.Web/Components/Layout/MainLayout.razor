@@ -1,0 +1,29 @@
+﻿@inherits LayoutComponentBase
+
+
+@code {
+    private string sidebarWidth = "250px";
+}
+
+<div class="page" style="display: flex; flex-direction: row;">
+    <div class="sidebar" style="width:@sidebarWidth; min-width:50px; max-width:100vw; position:relative;">
+        <NavMenu />
+        <div class="sidebar-resizer"
+            style="position:absolute; top:0; right:0; width:6px; height:100%; cursor:ew-resize; background:#00808033; z-index:10;"
+            onmousedown="sidebarResizerMouseDown(event)"></div>
+    </div>
+    <main style="flex:1;">
+        <div class="top-row px-4">
+            <!-- Removed About link -->
+        </div>
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>

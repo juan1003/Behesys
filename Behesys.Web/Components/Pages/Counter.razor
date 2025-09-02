@@ -1,0 +1,233 @@
+﻿@page "/counter"
+@rendermode InteractiveServer
+
+<PageTitle>Patient Dashboard</PageTitle>
+
+
+<h1 class="mb-4">Patient Dashboard</h1>
+
+<button class="btn btn-primary mb-3" @onclick="ShowAddPatientModal">Add Patient</button>
+
+<!-- Modal -->
+<div class="modal fade @(showModal ? "show d-block" : "")" tabindex="-1" style="background:rgba(0,0,0,0.3);"
+    aria-modal="true" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">Add Patient</h5>
+                <button type="button" class="btn-close" @onclick="HideAddPatientModal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input class="form-control" @bind="newPatient.Name" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Age</label>
+                    <input type="number" class="form-control" @bind="newPatient.Age" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Gender</label>
+                    <select class="form-select" @bind="newPatient.Gender">
+                        <option value="">Select...</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Last Visit</label>
+                    <input type="date" class="form-control" @bind="newPatient.LastVisit" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Status</label>
+                    <select class="form-select" @bind="newPatient.Status">
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" @onclick="HideAddPatientModal">Cancel</button>
+                <button class="btn btn-primary" @onclick="AddPatient">Add</button>
+            </div>
+        </div>
+    </div>
+    </div>
+
+@if (showDetailModal)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background:rgba(0,0,0,0.3);" aria-modal="true" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Patient Details</h5>
+                    <button type="button" class="btn-close" @onclick="HideDetailModal"></button>
+                </div>
+                <div class="modal-body">
+                    @if (selectedPatient != null)
+                    {
+                        <div><strong>Name:</strong> @selectedPatient.Name</div>
+                        <div><strong>Age:</strong> @selectedPatient.Age</div>
+                        <div><strong>Gender:</strong> @selectedPatient.Gender</div>
+                        <div><strong>Last Visit:</strong> @selectedPatient.LastVisit.ToShortDateString()</div>
+                        <div><strong>Status:</strong> @selectedPatient.Status</div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="HideDetailModal">Close</button>
+                    <button class="btn btn-warning" @onclick="ShowShareModal">Share</button>
+                </div>
+@if (showShareModal)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background:rgba(0,0,0,0.3);" aria-modal="true" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title">Share Patient Info</h5>
+                    <button type="button" class="btn-close" @onclick="HideShareModal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to request permission to share this patient's information?</p>
+                    <p><strong>Patient:</strong> @selectedPatient?.Name</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="HideShareModal">Cancel</button>
+                    <button class="btn btn-success" @onclick="ConfirmShare">Send Request</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+            </div>
+        </div>
+    </div>
+}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+        <strong>Patients</strong>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Last Visit</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var patient in patients)
+                {
+                    <tr style="cursor:pointer;" @onclick="() => ShowDetail(patient.Id)">
+                        <td>@patient.Name</td>
+                        <td>@patient.Age</td>
+                        <td>@patient.Gender</td>
+                        <td>@patient.LastVisit.ToShortDateString()</td>
+                        <td>
+                            <span class="badge @(patient.Status == "Active" ? "bg-success" : "bg-secondary")">@patient.Status</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    [Inject] public IHttpClientFactory ClientFactory { get; set; } = default!;
+
+    private List<Patient> patients = new();
+    private bool showModal = false;
+    private Patient newPatient = new Patient();
+    private bool showDetailModal = false;
+    private bool showShareModal = false;
+    private Patient? selectedPatient;
+    private void ShowShareModal()
+    {
+        showShareModal = true;
+    }
+
+    private void HideShareModal()
+    {
+        showShareModal = false;
+    }
+
+    private void ConfirmShare()
+    {
+        showShareModal = false;
+        // For demo: show confirmation (could use a toast or alert)
+        // You can add a notification here if desired
+    }
+    private void ShowDetail(int id)
+    {
+        selectedPatient = patients.FirstOrDefault(p => p.Id == id);
+        showDetailModal = selectedPatient != null;
+        StateHasChanged();
+    }
+
+    private void HideDetailModal()
+    {
+        showDetailModal = false;
+        selectedPatient = null;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPatientsAsync();
+    }
+
+    private async Task LoadPatientsAsync()
+    {
+        var client = ClientFactory.CreateClient("PatientApi");
+        var result = await client.GetAsync("");
+        if (result.IsSuccessStatusCode)
+        {
+            var data = await result.Content.ReadFromJsonAsync<List<Patient>>();
+            if (data != null)
+                patients = data;
+        }
+    }
+
+    private void ShowAddPatientModal()
+    {
+        newPatient = new Patient { LastVisit = DateTime.Now };
+        showModal = true;
+    }
+
+    private void HideAddPatientModal()
+    {
+        showModal = false;
+    }
+
+    private async Task AddPatient()
+    {
+        if (!string.IsNullOrWhiteSpace(newPatient.Name) && newPatient.Age > 0 && !string.IsNullOrWhiteSpace(newPatient.Gender)
+        && !string.IsNullOrWhiteSpace(newPatient.Status))
+        {
+            var client = ClientFactory.CreateClient("PatientApi");
+            var response = await client.PostAsJsonAsync("", newPatient);
+            if (response.IsSuccessStatusCode)
+            {
+                var created = await response.Content.ReadFromJsonAsync<Patient>();
+                if (created != null)
+                    patients.Insert(0, created);
+                showModal = false;
+                StateHasChanged();
+            }
+        }
+    }
+
+    public class Patient
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public int Age { get; set; }
+        public string Gender { get; set; } = string.Empty;
+        public DateTime LastVisit { get; set; }
+        public string Status { get; set; } = "Active";
+    }
+}
